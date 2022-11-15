@@ -8,8 +8,12 @@ print(filename)
 workbook = load_workbook(filename=filename)
 print(workbook.sheetnames)
 sheet = workbook.active
-sheets = workbook.sheetnames
-print(sheets)
+# sheets = workbook.sheetnames
+# print(sheets)
+
+sheet.title = "CIP_Pegs"
+CIP_Bitmasks = workbook.create_sheet(title="CIP Bitmasks")
+
 Header = ['N/A', 'Step Number', 'Step Description', 'Step Time', 'Max Step', 'Step Type', 'Validated',
           'Burst On', 'Burst Off', 'Bit Mask 1', 'Bit Mask 2', 'Bit Mask 3', 'Bit Mask 4',
           'Supply Flow', 'Wash Tank Level', 'Acid Tank Level', 'Recovery Tank Level', 'Rinse Tank Level',
@@ -42,9 +46,17 @@ StepDescription = ['NA', 'Ready Tanks', 'Fill CIP Tank', 'Charge Pre-Wash',
                    'Flush Chemical', 'Add Chemical Press', 'Rinse from Recovery', 'Rinse Recirculate']
 #print(StepDescription[sheet["B18"].value])
 
+ABC_Bitmask = ['Full Wash', 'Sani Only', 'Rinse Only', 'Caustic Only', 'Acid Only', 'Sub Seq Enable', 'TOV Pulser',
+               'Proof of Flow', 'Enable Flush Valves', 'Enable Drain Valves', 'Pump Down', 'PMO Valve Pulse Req',
+               'Sani Pump', 'Chlor Tank Chem Pump', 'Acid Tank Chem Pump', 'Caustic Tank Chem Pump',
+               'Force to Waste EQ Feed Tank', 'Return Pump', 'Supply Pump', 'Rinse Tank Outlet', 'Drain', 'Recovery Tank Outlet',
+               'Recovery Tank Return', 'Chlor Tank Water', 'Chlor Tank Outlet', 'Chlor Tank Return', 'Sep Acid Tank Water',
+               'Sep Acid Tank Outlet', 'Sep Acid Tank Return', 'Sep Caustic Tank Water', 'Sep Caustic Tank Outlet',
+               'Sep Caustic Tank Return']
 size_row = 50
 size_column = 53
 
+# Swap Description number for Step Description name
 for row in range(1, size_row):
     print(sheet.cell(row=row, column=2).value)
     sheet.cell(row= row, column=2, value= StepDescription[sheet.cell(row= row, column=2).value])
@@ -55,6 +67,13 @@ sheet.insert_rows(1)
 for column in range(1,53):
     sheet.cell(row=1, column=column, value= Title[column])
 
+## Bitmask Sheet----------------------------
+
+
+for column in range(33):
+    CIP_Bitmasks.cell(row=1, column=column, value=column)
+
+## Save Workbook
 workbook.save(filename=filename.replace('.xlsx', '_copy.xlsx'))
 
 # Tgt_StepDes = 'B'
