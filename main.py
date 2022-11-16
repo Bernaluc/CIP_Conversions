@@ -59,19 +59,41 @@ size_column = 53
 # Swap Description number for Step Description name
 for row in range(1, size_row):
     print(sheet.cell(row=row, column=2).value)
-    sheet.cell(row= row, column=2, value= StepDescription[sheet.cell(row= row, column=2).value])
+    sheet.cell(row=row, column=2, value=StepDescription[sheet.cell(row=row, column=2).value])
     print(sheet.cell(row=row, column=2).value)
 
-sheet.insert_rows(1)
 
+
+#Get Bitmasks
+BM1 = []
+for row in range(1,50):
+    Bitmask = sheet.cell(row=row, column=9).value
+    Bitmask += 1 << 32
+    BitMask_Binary = format(Bitmask,'033b')
+    BitMask_Binary = BitMask_Binary[::-1] #Reverse to get into correct order
+    BM1.append(BitMask_Binary[:-1:])  #Only take 32 bits
+
+#Add Headers to Main Sheet
+
+sheet.insert_rows(1)
 for column in range(1,53):
-    sheet.cell(row=1, column=column, value= Title[column])
+    sheet.cell(row=1, column=column, value=Title[column])
+
 
 ## Bitmask Sheet----------------------------
 
+for row, bits in enumerate(BM1, start=1):
+    for column, bit in enumerate(bits, start=1):
+        current_cell = CIP_Bitmasks.cell(row=row, column=column) # Potential for styling
+        CIP_Bitmasks.cell(row=row, column=column, value=int(bit))
 
-for column in range(33):
-    CIP_Bitmasks.cell(row=1, column=column, value=column)
+CIP_Bitmasks.insert_rows(1)
+
+for column, title in enumerate(ABC_Bitmask, start=1):
+    CIP_Bitmasks.cell(row=1, column=column, value= ABC_Bitmask[column-1])
+
+# for column in range(1,33):
+#     CIP_Bitmasks.cell(row=1, column=column, value=column)
 
 ## Save Workbook
 workbook.save(filename=filename.replace('.xlsx', '_copy.xlsx'))
